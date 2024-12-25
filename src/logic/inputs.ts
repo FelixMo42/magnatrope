@@ -3,6 +3,20 @@ import { getItemAmount, Item, updateUserItem } from "./item"
 import { givePawnStatus, killPawn, movePawn, Pawn, pawnHasStatus, pawnOnTile } from "./pawn"
 import { update, World } from "./world"
 
+document.onkeyup = (event) => {
+    if (event.key === "E") {
+        endturn()
+    }
+
+    if (event.key === "Tab") {
+        update(w => selectNextPawn(w))
+    }
+
+    if (event.key === "f") {
+        
+    }
+}
+
 const captures = new Map<string, Function>()
 
 // Drag detection
