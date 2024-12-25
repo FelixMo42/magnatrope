@@ -2,12 +2,12 @@ import { Graphics, Text } from "pixi.js"
 import { hex2pixel } from "../utils/hex"
 import { use } from "../utils/use"
 import { Pawn } from "../logic/pawn"
-import { onclick } from "../logic/inputs"
+import { getSelectedPawn, onclick } from "../logic/inputs"
 
 export function PawnView(pawn: Pawn) {
     // Draw the pawn
     const g = new Graphics()
-    use((s) => s.pawns[s.selectedPawn] === pawn, (selected) => {
+    use((w) => getSelectedPawn(w) === pawn, (selected) => {
         g   .clear()
             .circle(0, 0, 30)
             .fill(selected ? 0x928ECC : 0x928E85)
@@ -38,7 +38,7 @@ export function PawnView(pawn: Pawn) {
 
     // What happens when we click on the pawn?
     g.interactive = true
-    g.onpointertap = (e) => onclick(pawn.coord, e)
+    g.onpointertap = () => onclick(pawn.coord)
 
     return g
 }

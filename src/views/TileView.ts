@@ -16,7 +16,7 @@ export function TileView(tile: Tile) {
 
     // What happens when we click on the tile?
     g.interactive = true
-    g.onpointertap = (e) => onclick(tile.coord, e)
+    g.onpointertap = () => onclick(tile.coord)
 
     return g
 }

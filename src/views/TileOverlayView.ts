@@ -3,6 +3,7 @@ import { hex2pixel, hexEqual, hexsInRange } from "../utils/hex"
 import { use } from "../utils/use"
 import { WORLD } from "../logic/world"
 import { Pawn } from "../logic/pawn"
+import { getSelectedPawn } from "../logic/inputs"
 
 const TARGET = new GraphicsContext()
         .circle(0, 0, 9)
@@ -39,7 +40,7 @@ function MovementOverlayView(pawn: Pawn) {
 export function TileOverlayView() {
     const c = new Container()
 
-    use(w => w.pawns[w.selectedPawn], (pawn) => {
+    use(getSelectedPawn, (pawn) => {
         // Clear the overlay
         while (c.children[0]) { c.removeChild(c.children[0]) }
 

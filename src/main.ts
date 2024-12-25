@@ -1,5 +1,5 @@
 import App from './app'
-import { endturn } from './logic/inputs'
+import { endturn, getSelectedPawn, getTurnUser } from './logic/inputs'
 import { Item } from './logic/item'
 import { getPawnActions, Pawn, pawnDoAction } from './logic/pawn'
 import { capitalize } from './utils/misc'
@@ -22,7 +22,7 @@ async function main() {
 
 function ResourcesHtml() {
     const el = document.getElementById("items")!
-    use(w => w.users[0], (user) => {
+    use(w => getTurnUser(w), (user) => {
         el.replaceChildren(
             m("label", "Resources"),
             ...user.items.map(item =>
@@ -34,7 +34,7 @@ function ResourcesHtml() {
 
 function SelectedHtml() {
     const el = document.getElementById("selected")!
-    use(w => w.pawns[w.selectedPawn], (pawn: Pawn) => {
+    use(getSelectedPawn, (pawn: Pawn) => {
         if (!pawn) {
             el.style.display = "none";
             return

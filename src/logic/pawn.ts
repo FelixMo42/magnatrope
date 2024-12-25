@@ -1,12 +1,12 @@
 import { Hex, hexDistance, hexEqual } from "../utils/hex"
-import { capitalize } from "../utils/misc"
 import { pathfind } from "../utils/pathfinding"
-import { capture } from "./inputs"
-import { getItemAmount, Item, updateUserItem } from "./item"
+import { capture, getTurnUser } from "./inputs"
+import { getItemAmount, Item, updateUserItem, User } from "./item"
 import { update, WORLD, World } from "./world"
 
 export interface Pawn {
     coord: Hex,
+    user: User,
     kind: "basic" | "hunter" | "farmer" | "lumber",
     population: number,
     statuses: PawnStatus[],
@@ -19,9 +19,10 @@ export type PawnStatus = "starving"
 
 export type PawnKind = Pawn["kind"]
 
-export function Pawn(coord: Hex): Pawn {
+export function Pawn(coord: Hex, user: User): Pawn {
     return {
         coord,
+        user,
         kind: "basic",
         population: 1,
         statuses: [],
@@ -73,7 +74,8 @@ function pawnCanDoAction(pawn: Pawn, action: PawnAction) {
 
     // Make sure we have enough items
     for (const item of action.items) {
-        if (getItemAmount(WORLD.users[0], item.name) < -item.amount) {
+        const user = getTurnUser(WORLD)
+        if (getItemAmount(user, item.name) < -item.amount) {
             return false
         }
     }
@@ -83,7 +85,7 @@ function pawnCanDoAction(pawn: Pawn, action: PawnAction) {
 
 export function pawnDoAction(pawn: Pawn, action: PawnAction) {
     update((w) => {
-        const user = w.users[0]
+        const user = getTurnUser(w)
 
         if (pawnCanDoAction(pawn, action)) {
             // Use actions
@@ -122,7 +124,7 @@ export function getPawnActions(pawn: Pawn): PawnAction[] {
         Action("Split Population", [], () => {
             capture("onclick", (w: World, hex: Hex) => {
                 if (hexDistance(pawn.coord, hex) == 1) {
-                    const newPawn = Pawn(hex)
+                    const newPawn = Pawn(hex, pawn.user)
                     newPawn.population = 1
                     pawn.population = pawn.population - newPawn.population
                     w.pawns.push(newPawn)
