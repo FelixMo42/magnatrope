@@ -1,16 +1,18 @@
 import { Hex, hexsInRange } from "../utils/hex"
 import { selectNextFromList } from "../utils/misc"
+import { ON_START_TURN } from "./events"
 import { getItemAmount, Item, updateUserItem, User } from "./item"
 import { givePawnStatus, killPawn, Pawn, pawnHasStatus } from "./pawn"
 import { Tile } from "./tile"
-
-export const ON_START_TURN: Array<Function> = []
 
 interface GameOptions {
     mapSize: number
 }
 
 class Game {
+    isStarted = false
+    isDone = false
+    
     users: User[] = []
     tiles: Tile[] = []
     pawns: Pawn[] = []
@@ -20,6 +22,7 @@ class Game {
     }
 
     start() {
+        this.isStarted = true
         ON_START_TURN.forEach(cb => cb())
     }
 

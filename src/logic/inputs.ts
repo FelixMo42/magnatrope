@@ -1,9 +1,10 @@
 import { Hex } from "../utils/hex"
 import { movePawn, Pawn, pawnOnTile } from "./pawn"
-import { game, ON_START_TURN } from "./game"
+import { game } from "./game"
 import { isDrag } from "../utils/drag"
 import { update } from "../utils/use"
 import { selectNextFromList } from "../utils/misc"
+import { ON_START_TURN } from "./events"
 
 function selectPawn(pawn: Pawn) {
     inputManager.pawn = pawn
