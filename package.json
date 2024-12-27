@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild ./src/main.ts --bundle --minify --sourcemap --outfile=res/index.js --watch"
+    "dev": "esbuild ./src/main.ts --bundle --minify --sourcemap --outfile=res/index.js --watch",
+    "build": "cd res; zip ../bundle.zip *"
   },
   "author": "Felix Moses",
   "license": "GPL-3.0-only",
