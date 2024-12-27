@@ -1,12 +1,16 @@
 import App from './app'
-import { endturn, getSelectedPawn, getTurnUser } from './logic/inputs'
 import { Item } from './logic/item'
 import { getPawnActions, Pawn, pawnDoAction } from './logic/pawn'
+import { game } from './logic/game'
 import { capitalize } from './utils/misc'
-import { use } from './utils/use'
+import { update, use } from './utils/use'
 import { GameView } from './views/GameView'
+import { inputManager } from './logic/inputs'
 
 async function main() {
+    // Event stuff
+    game.start()
+
     // Pixi.js stuff
     const app = await App.createAndInit("black")
     app.viewport.addChild(GameView())
@@ -15,14 +19,14 @@ async function main() {
     SelectedHtml()
     ResourcesHtml()
 
-    document.getElementById("endturn")!.onclick = () => {
-        endturn()
-    }
+    document
+        .getElementById("endturn")!
+        .onclick = () => update(() => game.endTurn())
 }
 
 function ResourcesHtml() {
     const el = document.getElementById("items")!
-    use(w => getTurnUser(w), (user) => {
+    use(() => game.turn.user, (user) => {
         el.replaceChildren(
             m("label", "Resources"),
             ...user.items.map(item =>
@@ -34,7 +38,7 @@ function ResourcesHtml() {
 
 function SelectedHtml() {
     const el = document.getElementById("selected")!
-    use(getSelectedPawn, (pawn: Pawn) => {
+    use(() => inputManager.pawn, (pawn) => {
         if (!pawn) {
             el.style.display = "none";
             return
@@ -43,7 +47,7 @@ function SelectedHtml() {
         }
 
         el.replaceChildren(
-            m("label", `Selected: ${capitalize(pawn.kind)} Pawn`),
+            m("label", `Selected: Pawn`),
             m("p", `Actions: ${pawn.actionsLeft}/${pawn.actionsFull}`),
             m("p", `Population: ${pawn.population}`),
             
@@ -68,9 +72,9 @@ function displayItems(o: { items: Item[] }) {
     ).join(", ")})`
 }
 
-function button(text: string, onclick: () => void) {
+function button(text: string, effect: () => void) {
     const el = m("button", text)
-    el.onclick = onclick
+    el.onclick = () => update(effect)
     return el
 }
 
@@ -80,4 +84,4 @@ function m(tag: string, ...children: (string | HTMLElement)[]) {
     return el
 }
 
-main()
+setTimeout(main, 0)

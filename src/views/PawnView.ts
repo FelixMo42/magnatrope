@@ -2,12 +2,13 @@ import { Graphics, Text } from "pixi.js"
 import { hex2pixel } from "../utils/hex"
 import { use } from "../utils/use"
 import { Pawn } from "../logic/pawn"
-import { getSelectedPawn, onclick } from "../logic/inputs"
+import { inputManager, onclick } from "../logic/inputs"
+import { game } from "../logic/game"
 
 export function PawnView(pawn: Pawn) {
     // Draw the pawn
     const g = new Graphics()
-    use((w) => getSelectedPawn(w) === pawn, (selected) => {
+    use(() => inputManager.pawn === pawn, (selected) => {
         g   .clear()
             .circle(0, 0, 30)
             .fill(selected ? 0x928ECC : 0x928E85)

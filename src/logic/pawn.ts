@@ -1,34 +1,29 @@
-import { Hex, hexDistance, hexEqual } from "../utils/hex"
+import { Hex, hexEqual } from "../utils/hex"
 import { pathfind } from "../utils/pathfinding"
-import { capture, getTurnUser } from "./inputs"
 import { getItemAmount, Item, updateUserItem, User } from "./item"
-import { update, WORLD, World } from "./world"
+import { game } from "./game"
+import { inputManager } from "./inputs"
 
 export interface Pawn {
     coord: Hex,
     user: User,
-    kind: "basic" | "hunter" | "farmer" | "lumber",
     population: number,
     statuses: PawnStatus[],
-    items: Item[],
     actionsLeft: number,
     actionsFull: number,
 }
 
 export type PawnStatus = "starving"
 
-export type PawnKind = Pawn["kind"]
-
-export function Pawn(coord: Hex, user: User): Pawn {
+export function Pawn(coord: Hex, user: User, prototype: Partial<Pawn>={}): Pawn {
     return {
-        coord,
-        user,
-        kind: "basic",
         population: 1,
         statuses: [],
-        items: [],
         actionsLeft: 2,
         actionsFull: 2,
+        ...prototype,
+        coord,
+        user,
     }
 }
 
@@ -41,8 +36,8 @@ export function movePawn(pawn: Pawn, hex: Hex) {
     }
 }
 
-export function pawnOnTile(world: World, hex: Hex) {
-    return world.pawns.find((pawn) => hexEqual(pawn.coord, hex))
+export function pawnOnTile(hex: Hex) {
+    return game.pawns.find((pawn) => hexEqual(pawn.coord, hex))
 }
 
 export function hasActionsLeft(pawn: Pawn) {
@@ -50,11 +45,7 @@ export function hasActionsLeft(pawn: Pawn) {
 }
 
 export function killPawn(pawn: Pawn) {
-    WORLD.pawns = WORLD.pawns.filter((p) => p !== pawn)
-}
-
-export function pawnIsDead(pawn: Pawn) {
-    return !WORLD.pawns.includes(pawn)
+    game.pawns = game.pawns.filter((p) => p !== pawn)
 }
 
 // Actions
@@ -74,7 +65,7 @@ function pawnCanDoAction(pawn: Pawn, action: PawnAction) {
 
     // Make sure we have enough items
     for (const item of action.items) {
-        const user = getTurnUser(WORLD)
+        const user = game.turn.user
         if (getItemAmount(user, item.name) < -item.amount) {
             return false
         }
@@ -84,57 +75,36 @@ function pawnCanDoAction(pawn: Pawn, action: PawnAction) {
 }
 
 export function pawnDoAction(pawn: Pawn, action: PawnAction) {
-    update((w) => {
-        const user = getTurnUser(w)
-
-        if (pawnCanDoAction(pawn, action)) {
-            // Use actions
-            pawn.actionsLeft -= action.actionCost
-            
-            // Give/use items
-            if (action.items) {
-                action.items.forEach((item) => {
-                    updateUserItem(user, item)
-                })
-            }
-
-            // Apply effect
-            action.effect(pawn)
+    if (pawnCanDoAction(pawn, action)) {
+        // Use actions
+        pawn.actionsLeft -= action.actionCost
+        
+        // Give/use items
+        if (action.items) {
+            action.items.forEach((item) => {
+                updateUserItem(game.turn.user, item)
+            })
         }
-    })
+
+        // Apply effect
+        action.effect(pawn)
+    }
 }
 
 export function Action(
     name: string,
     items: Item[],
-    effect: (pawn: Pawn) => void = () => {}
+    effect: (pawn: Pawn) => void = () => {},
+    actionCost: number = 1,
 ): PawnAction {
-    return {
-        name,
-        items,
-        actionCost: 1,
-        effect,
-    }
+    return { name,  items, actionCost, effect }
 }
 
 export function getPawnActions(pawn: Pawn): PawnAction[] {
     return [
         Action("Forage", [Item("food", pawn.population)]),
-
-        Action("Split Population", [], () => {
-            capture("onclick", (w: World, hex: Hex) => {
-                if (hexDistance(pawn.coord, hex) == 1) {
-                    const newPawn = Pawn(hex, pawn.user)
-                    newPawn.population = 1
-                    pawn.population = pawn.population - newPawn.population
-                    w.pawns.push(newPawn)
-                }
-            })
-        }),
-
-        Action("Increase Population", [], () => {
-            pawn.population += 1
-        }),
+        Action("Split Population", [], () => inputManager.mode = "split", 0),
+        Action("Increase Population", [], () => pawn.population += 1),
     ]
 }
 

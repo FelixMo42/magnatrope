@@ -1,34 +1,35 @@
-import { update, WORLD, World } from "../logic/world"
-import { clearCBs, on } from "./gameevents"
-
-const context: { uses?: Array<Function> } = { uses: undefined }
-
-export function captureUses(cb: () => void) {
-    const uses: Array<Function> = []
-    const prev = context.uses
-    context.uses = uses
-    cb()
-    context.uses = prev
-    return uses
+const context = {
+    hooks: [] as Array<Function>
 }
 
-export function use<T>(data: (s: World) => T, cb: (t: T) => void) {
-    let memory: string = ""
+export function use<T>(data: () => T, cb: (_: T) => void, elseCb?: () => void) {
+    let memory = JSON.stringify(data())
+    cb(data())
 
-    function check(s: World) {
-        const result = data(s)
-        const current = JSON.stringify(result)
-        if (current !== memory) {
-            cb(result)
-            memory = current
+    context.hooks.push(() => {
+        const current = data()
+        const hash = JSON.stringify(current)
+
+        if (hash !== memory) {
+            cb(current)
+            memory = hash
+        } else if (elseCb) {
+            elseCb()
         }
-    }
+    })
+}
 
-    if (context.uses) {
-        context.uses.push(check)
-    }
+export function captureContext(cb: Function) {
+    const oldContext = context.hooks
+    context.hooks = []
+    cb()
+    const hooks = context.hooks
+    context.hooks = oldContext
 
-    on(update, check)
+    return () => hooks.forEach(cb => cb())
+}
 
-    check(WORLD)
+export function update(change: () => void) {
+    change()
+    context.hooks.forEach(cb => cb())
 }
