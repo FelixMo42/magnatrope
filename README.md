@@ -1,3 +1,5 @@
+# Magnatrope
+
 An 4x game with deep ecology characteristics :)
 
 ## Keybindings
@@ -11,6 +13,7 @@ An 4x game with deep ecology characteristics :)
 ## Roadmap
 
 Current Priorities:
+- Combat
 - Basic Start/End game UI
 
 Basic Features Backlog:
