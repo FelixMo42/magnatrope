@@ -19,8 +19,8 @@ async function main() {
     }
 
     tabView(app, screens, () => {
-        if (game.isStarted) return "GameScreen"
         if (game.isDone) return "EndScreen"
+        if (game.isStarted) return "GameScreen"
         return "StartScreen"
     })
 }

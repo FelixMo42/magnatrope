@@ -27,6 +27,9 @@ class Game {
     }
 
     endTurn() {
+        // Is the game over?
+        if (gameOver()) return this.isDone = true
+
         // Who's turn is starting?
         game.turn.user = selectNextFromList(game.users, game.turn.user)
 
@@ -71,6 +74,12 @@ class Game {
             user: this.users[0]
         }
     }
+}
+
+function gameOver() {
+    const usersLeft = new Set()
+    for (const pawn of game.pawns) usersLeft.add(pawn.user)
+    return usersLeft.size <= 1
 }
 
 export const game = new Game({

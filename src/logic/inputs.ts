@@ -1,5 +1,5 @@
 import { Hex } from "../utils/hex"
-import { movePawn, Pawn, pawnOnTile } from "./pawn"
+import { killPawn, movePawn, Pawn, pawnOnTile } from "./pawn"
 import { game } from "./game"
 import { isDrag } from "../utils/drag"
 import { update } from "../utils/use"
@@ -30,22 +30,21 @@ export const inputManager = {
         "move": (hex: Hex) => {
             if (pawnOnTile(hex)?.user === game.turn.user) {
                 selectPawn(pawnOnTile(hex)!)
-            } else if (!pawnOnTile(hex)) {
-                const pawn = inputManager.pawn
-                if (!pawn) return
+            } else {
+                if (!inputManager.pawn) return
     
                 // Move selected pawn
-                movePawn(pawn, hex)
+                movePawn(inputManager.pawn, hex)
     
                 // Select next pawn if this one has no actions left
                 // Do we want to do this?
-                if (pawn.actionsLeft === 0) selectNextPawn()
-            }
+                if (inputManager.pawn.actionsLeft === 0) selectNextPawn()
+            } 
         },
         "split": (hex: Hex) => {
             if (pawnOnTile(hex)?.user === game.turn.user) {
                 selectPawn(pawnOnTile(hex)!)
-            } else if (
+             } else if (
                 !pawnOnTile(hex) &&
                 inputManager.pawn!.population > 1 &&
                 inputManager.pawn!.actionsLeft > 0

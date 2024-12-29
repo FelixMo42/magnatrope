@@ -31,8 +31,20 @@ export function movePawn(pawn: Pawn, hex: Hex) {
     const path = pathfind(pawn.coord, hex)
 
     while (hasActionsLeft(pawn) && path.length > 0) {
-        pawn.coord = path.shift()!
+        const hex = path.shift()!
         pawn.actionsLeft -= 1
+
+        if (pawnOnTile(hex)) {
+            return attackPawn(pawn, pawnOnTile(hex)!)
+        } else {
+            pawn.coord = hex
+        }
+
+    }
+
+    function attackPawn(attacker: Pawn, defender: Pawn) {
+        defender.population -= Math.ceil(attacker.population / 2)
+        if (defender.population <= 0) killPawn(defender)
     }
 }
 
