@@ -39,7 +39,6 @@ export function movePawn(pawn: Pawn, hex: Hex) {
         } else {
             pawn.coord = hex
         }
-
     }
 
     function attackPawn(attacker: Pawn, defender: Pawn) {
@@ -113,8 +112,11 @@ export function Action(
 }
 
 export function getPawnActions(pawn: Pawn): PawnAction[] {
+    const tile = game.tiles.find((tile) => hexEqual(tile.coord, pawn.coord))!
+    const food = Math.min(pawn.population, tile.trees)
+
     return [
-        Action("Forage", [Item("food", pawn.population)]),
+        Action("Forage", [Item("food", food)], () => tile.trees -= food),
         Action("Split Population", [], () => inputManager.mode = "split", 0),
         Action("Increase Population", [], () => pawn.population += 1),
     ]

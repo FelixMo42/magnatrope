@@ -3,12 +3,14 @@ import { Hex } from "../utils/hex"
 export interface Tile {
     coord: Hex
     color: number
+    trees: number
 }
 
 export function Tile(coord: Hex): Tile {
     return {
         coord,
-        color: randomGreen()
+        color: randomGreen(),
+        trees: 100,
     }
 }
 
