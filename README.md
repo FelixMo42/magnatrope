@@ -13,16 +13,14 @@ An 4x game with deep ecology characteristics :)
 ## Roadmap
 
 Current Priorities:
-- Combat
-- Basic Start/End game UI
+- Better Tile Graphics
+- Degredation of Nature
+- More tile types
 
 Basic Features Backlog:
 - Better Starvation
 - Better Pawn Graphics
-- Better Tile Graphics
 - Farming mode
-- Degredation of Nature
-- More tile types
 
 Stretch Goals:
 - Enemy AI
