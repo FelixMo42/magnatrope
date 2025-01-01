@@ -1,7 +1,4 @@
-export interface User {
-    name: string
-    items: Item[]
-}
+import { User } from "./user"
 
 export interface Item {
     name: "wood" | "food",

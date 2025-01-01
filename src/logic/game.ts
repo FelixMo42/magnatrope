@@ -1,9 +1,10 @@
 import { Hex, hexsInRange } from "../utils/hex"
 import { selectNextFromList } from "../utils/misc"
 import { ON_START_TURN } from "./events"
-import { getItemAmount, Item, updateUserItem, User } from "./item"
+import { getItemAmount, Item, updateUserItem } from "./item"
 import { givePawnStatus, killPawn, Pawn, pawnHasStatus } from "./pawn"
 import { Tile } from "./tile"
+import { ColonistController, InputController, User } from "./user"
 
 interface GameOptions {
     mapSize: number
@@ -32,23 +33,7 @@ class Game {
 
         // Who's turn is starting?
         game.turn.user = selectNextFromList(game.users, game.turn.user)
-
-        // Use food for all their pawns
-        game.pawns
-            .filter((pawn) => pawn.user === game.turn.user)
-            .forEach((pawn) => {
-                const food = Item("food", -pawn.population)
-
-                if (getItemAmount(game.turn.user, "food") >= food.amount) {
-                    updateUserItem(game.turn.user, food)
-                    pawn.actionsLeft = pawn.actionsFull
-                } else if (!pawnHasStatus(pawn, "starving")) {
-                    givePawnStatus(pawn, "starving")
-                    pawn.actionsLeft = pawn.actionsFull - 1
-                } else {
-                    killPawn(pawn)
-                }
-            })
+        game.turn.user.controller.onTurnStart()
 
         // Inform the world
         ON_START_TURN.forEach(cb => cb())
@@ -56,15 +41,17 @@ class Game {
 
     constructor({ mapSize }: GameOptions) {
         this.users = [{
-            name: "Player 1",
+            name: "Player",
             items: [ Item("food", 3) ],
+            controller: InputController,
         }, {
-            name: "Player 2",
+            name: "Colonist",
             items: [ Item("food", 3) ],
+            controller: ColonistController,
         }]
 
         this.pawns = [
-            Pawn(Hex(mapSize, -mapSize), this.users[0], { population: 3 }),
+            Pawn(Hex(0, 0), this.users[0], { population: 3 }),
             Pawn(Hex(-mapSize, mapSize), this.users[1], { population: 3 }),
         ]
 

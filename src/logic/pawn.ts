@@ -1,8 +1,9 @@
 import { Hex, hexEqual } from "../utils/hex"
 import { pathfind } from "../utils/pathfinding"
-import { getItemAmount, Item, updateUserItem, User } from "./item"
+import { getItemAmount, Item, updateUserItem } from "./item"
 import { game } from "./game"
 import { inputManager } from "./inputs"
+import { User } from "./user"
 
 export interface Pawn {
     coord: Hex,
@@ -27,8 +28,8 @@ export function Pawn(coord: Hex, user: User, prototype: Partial<Pawn>={}): Pawn 
     }
 }
 
-export function movePawn(pawn: Pawn, hex: Hex) {
-    const path = pathfind(pawn.coord, hex)
+export function movePawn(pawn: Pawn, target: Hex) {
+    const path = pathfind(pawn.coord, target)
 
     while (hasActionsLeft(pawn) && path.length > 0) {
         const hex = path.shift()!
