@@ -1,9 +1,9 @@
 import { Hex, hexsInRange } from "../utils/hex"
 import { selectNextFromList } from "../utils/misc"
 import { ON_START_TURN } from "./events"
-import { getItemAmount, Item, updateUserItem } from "./item"
-import { givePawnStatus, killPawn, Pawn, pawnHasStatus } from "./pawn"
-import { Tile } from "./tile"
+import { Item } from "./item"
+import { Pawn } from "./pawn"
+import { Tile, TREE_MAX } from "./tile"
 import { ColonistController, InputController, User } from "./user"
 
 interface GameOptions {
@@ -30,6 +30,11 @@ class Game {
     endTurn() {
         // Is the game over?
         if (gameOver()) return this.isDone = true
+
+        // Regenrate Nature
+        this.tiles.forEach((tile) => {
+            tile.trees = Math.min(tile.trees + 5, TREE_MAX)
+        })
 
         // Who's turn is starting?
         game.turn.user = selectNextFromList(game.users, game.turn.user)
