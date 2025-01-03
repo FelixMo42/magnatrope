@@ -1,10 +1,11 @@
 import { Hex } from "../utils/hex"
-import { killPawn, movePawn, Pawn, pawnOnTile } from "./pawn"
+import { movePawn, Pawn, pawnOnTile } from "./pawn"
 import { game } from "./game"
 import { isDrag } from "../utils/drag"
 import { update } from "../utils/use"
 import { selectNextFromList } from "../utils/misc"
 import { ON_START_TURN } from "./events"
+import { getTile, isWalkable } from "./tile"
 
 function selectPawn(pawn: Pawn) {
     inputManager.pawn = pawn
@@ -30,7 +31,7 @@ export const inputManager = {
         "move": (hex: Hex) => {
             if (pawnOnTile(hex)?.user === game.turn.user) {
                 selectPawn(pawnOnTile(hex)!)
-            } else {
+            } else if (isWalkable(getTile(hex))) {
                 if (!inputManager.pawn) return
     
                 // Move selected pawn
@@ -46,6 +47,7 @@ export const inputManager = {
                 selectPawn(pawnOnTile(hex)!)
              } else if (
                 !pawnOnTile(hex) &&
+                isWalkable(getTile(hex)) &&
                 inputManager.pawn!.population > 1 &&
                 inputManager.pawn!.actionsLeft > 0
             ) {

@@ -1,3 +1,4 @@
+import { getTile, isWalkable } from "../logic/tile"
 import { Hex, hexDistance, hexEqual, hexNeighbors } from "./hex"
 
 type NodeID = string
@@ -30,7 +31,9 @@ export function pathfind(start: Hex, target: Hex) {
         open.delete(current.id)
 
         // Add neighbors to open
-        hexNeighbors(current.tile).map((neighbor) => add(neighbor, current))
+        hexNeighbors(current.tile)
+            .filter((hex) => isWalkable(getTile(hex)))
+            .map((neighbor) => add(neighbor, current))
     }
 
     function add(tile: Hex, prev?: NodeData) {

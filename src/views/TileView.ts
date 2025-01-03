@@ -4,13 +4,18 @@ import { Tile } from "../logic/tile"
 import { onclick } from "../logic/inputs"
 import { use } from "../utils/use"
 
+function getTileColor(tile: Tile) {
+    if (tile.type === "montain") return 0x787366
+    return (140 - tile.trees) << 8
+}
+
 export function TileView(tile: Tile) {
     // Draw a hex with the right color
     const g = new Graphics()
     use(() => tile.trees, () => {
         g   .clear()
             .regularPoly(0, 0, HEX_SIZE, 6, 0)
-            .fill((140 - tile.trees) << 8)
+            .fill(getTileColor(tile))
     })
 
     // Repoistion the graphic to be in the right spot

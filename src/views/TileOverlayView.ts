@@ -4,6 +4,7 @@ import { use } from "../utils/use"
 import { game } from "../logic/game"
 import { Pawn } from "../logic/pawn"
 import { inputManager } from "../logic/inputs"
+import { isWalkable } from "../logic/tile"
 
 const TARGET = new GraphicsContext()
         .circle(0, 0, 9)
@@ -26,7 +27,7 @@ function MoveOverlayView(pawn: Pawn) {
 
     hexsInRange(pawn.actionsLeft, pawn.coord).forEach(hex => {
         const tile = game.tiles.find(t => hexEqual(t.coord, hex))
-        if (tile) {
+        if (tile && isWalkable(tile)) {
             const g = new Graphics(TARGET)
             
             const { x, y } = hex2pixel(tile.coord)
@@ -49,7 +50,7 @@ function SplitOverlayView(pawn: Pawn) {
 
     hexsInRange(1, pawn.coord).forEach(hex => {
         const tile = game.tiles.find(t => hexEqual(t.coord, hex))
-        if (tile) {
+        if (tile && isWalkable(tile)) {
             const g = new Graphics(PAWN)
 
             const { x, y } = hex2pixel(tile.coord)
