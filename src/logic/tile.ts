@@ -19,7 +19,8 @@ export function Tile(coord: Hex): Tile {
     }
 }
 
-export function isWalkable(tile: Tile) {
+export function isWalkable(tile?: Tile) {
+    if (!tile) return false
     return tile.type === "forest"
 }
 
