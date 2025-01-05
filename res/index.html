@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Magnatrope</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
             * {
                 box-sizing: border-box;
@@ -27,32 +28,28 @@
             }
 
             article {
-                margin: 10px;
                 border: 1px solid white;
-                border-radius: 5px;
-                min-width: 250px;
+                border-bottom: 1px solid white;
+                border-bottom-right-radius: 5px;
+                min-width: 25px;
                 background-color: black;
                 display: flex;
                 flex-direction: column;
                 z-index: 10;
             }
 
-            article > * {
+            article > div {
+                display: flex;
+                flex-direction: column;
+            }
+
+            article > div > * {
                 margin: 10px;
                 margin-bottom: 0px;
             }
 
-            article > *:last-child {
+            article > div > *:last-child {
                 margin-bottom: 10px;
-            }
-
-            article label {
-                margin: 0px;
-                background-color: gray;
-                padding: 5px 15px;
-                border-top-left-radius: 5px;
-                border-top-right-radius: 5px;
-                text-align: center;
             }
 
             article button {

@@ -23,9 +23,10 @@ export const inputManager = {
     mode: "move" as InputMode,
     pawn: undefined as Pawn | undefined,
     keybindings: {
-        "E": () => game.endTurn(),
+        "Enter": () => game.endTurn(),
         "Tab": () => selectNextPawn(),
-        "Escape": () => inputManager.mode = "move",
+
+        "m": () => inputManager.mode = "move",
     },
     mouseEffects: {
         "move": (hex: Hex) => {

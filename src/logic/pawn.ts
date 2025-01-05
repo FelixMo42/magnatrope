@@ -117,9 +117,9 @@ export function getPawnActions(pawn: Pawn): PawnAction[] {
     const food = Math.min(pawn.population, tile.trees)
 
     return [
-        Action("Forage", [Item("food", food)], () => tile.trees -= food),
-        Action("Split Population", [], () => inputManager.mode = "split", 0),
-        Action("Increase Population", [], () => pawn.population += 1),
+        Action("forage", [Item("food", food)], () => tile.trees -= food),
+        Action("split", [], () => inputManager.mode = "split", 0),
+        Action("+1 pop", [], () => pawn.population += 1),
     ]
 }
 
