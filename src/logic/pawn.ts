@@ -6,6 +6,7 @@ import { inputManager } from "./inputs"
 import { User } from "./user"
 
 export interface Pawn {
+    _kind: "pawn",
     coord: Hex,
     user: User,
     population: number,
@@ -18,6 +19,7 @@ export type PawnStatus = "starving"
 
 export function Pawn(coord: Hex, user: User, prototype: Partial<Pawn>={}): Pawn {
     return {
+        _kind: "pawn",
         population: 1,
         statuses: [],
         actionsLeft: 2,

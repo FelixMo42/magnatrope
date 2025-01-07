@@ -5,7 +5,7 @@ import { isDrag } from "../utils/drag"
 import { update } from "../utils/use"
 import { selectNextFromList } from "../utils/misc"
 import { ON_START_TURN } from "./events"
-import { getTile, isWalkable } from "./tile"
+import { getTile, isWalkable, Tile } from "./tile"
 
 function selectPawn(pawn: Pawn) {
     inputManager.pawn = pawn
@@ -22,6 +22,7 @@ function selectNextPawn() {
 export const inputManager = {
     mode: "move" as InputMode,
     pawn: undefined as Pawn | undefined,
+    selected: undefined as Tile | Pawn | undefined,
     keybindings: {
         "Enter": () => game.endTurn(),
         "Tab": () => selectNextPawn(),

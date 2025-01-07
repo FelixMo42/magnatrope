@@ -5,7 +5,7 @@ import { onclick } from "../logic/inputs"
 import { use } from "../utils/use"
 
 function getTileColor(tile: Tile) {
-    if (tile.type === "montain") return 0x787366
+    if (tile.kind === "montain") return 0x787366
     return (140 - tile.trees) << 8
 }
 

@@ -1,8 +1,6 @@
 import App from '../../app'
-import { Item } from '../../logic/item'
 import { getPawnActions, pawnDoAction } from '../../logic/pawn'
 import { game } from '../../logic/game'
-import { capitalize } from '../../utils/misc'
 import { use } from '../../utils/use'
 import { GameView } from '../GameView'
 import { inputManager } from '../../logic/inputs'
@@ -29,29 +27,24 @@ function GameActionsArticle() {
 }
 
 function SelectedArticle() {
-    return dyn(() => inputManager.pawn, (pawn, el) => {
-        if (!pawn) {
-            el.style.display = "none"
-            return []
-        } else {
-            el.style.display = ""
-        }
+    return dyn(() => getSelectedActions(), (actions) =>
+        actions.map(action =>
+            button(
+                `${action.name}`,
+                () => pawnDoAction(inputManager.pawn!, action)
+            )
+        )
+    )
+}
 
-        return [
-            ...getPawnActions(pawn).map(action =>
-                button(
-                    `${action.name}`,
-                    () => pawnDoAction(pawn, action)
-                )
-            ),
-        ]
-    })
+function getSelectedActions() {
+    return getPawnActions(inputManager.pawn!)
 }
 
 function ResourcesArticle() {
     return dyn(() => game.turn.user, (user) => [
         ...user.items.map(item =>
-            m("p", `${item.amount} 🍏 +0`)
+            m("p", `${item.amount} 🍏`)
         )
     ])
 }
