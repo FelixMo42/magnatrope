@@ -5,11 +5,16 @@ export const TREE_MAX = 100
 
 export type TileType = "forest" | "montain" | "water"
 
+export interface Building {
+    
+}
+
 export interface Tile {
     _type: "tile"
     coord: Hex
     trees: number
     kind: TileType
+    building?: Building
 }
 
 export function Tile(coord: Hex): Tile {
